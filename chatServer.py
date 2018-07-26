@@ -1,23 +1,28 @@
 import socket
 from threading import Thread
-
+from cryptoManager import CryptoManager
 HOST="127.0.0.1"
 PORT=12345
 MAX_BUFFER_SIZE = 4096
 
 def client_thread(conn, ip, port):
-    finished=False    
+    finished=False
+    cryptomanager = CryptoManager()
     print("Start comunication with %s : %s" %( ip , port))
     while not finished:
         input_from_client_bytes = conn.recv(MAX_BUFFER_SIZE)
-        input_from_client = input_from_client_bytes.decode("utf8")
-        print(repr(input_from_client))
+        print("antes: ", repr(input_from_client_bytes))
+        input_from_client = cryptomanager.decrypt(input_from_client_bytes)
+        
+        print("despues: ", repr(input_from_client))
         if input_from_client == "exit":
             finished=True
-            conn.sendall(b"Bye")
+            conn.sendall(cryptomanager.encrypt("Bye"))
             break
-        if input_from_client == "hello":
-            conn.sendall(b"hello word")
+        elif input_from_client == "hello":
+            conn.sendall(cryptomanager.encrypt("hello word"))
+        else:
+            conn.sendall(cryptomanager.encrypt("sorry not hello"))
     conn.shutdown(1)
     conn.close()  # close connection
     print("Close connection with " + ip + ':' + port)
