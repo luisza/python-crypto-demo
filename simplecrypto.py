@@ -38,3 +38,23 @@ class XOR_CRYPT:
     def decrypt(file_in, key):
         return str_xor(file_in, key)
 
+
+from Crypto.Cipher import AES
+class AES_EAX:
+    @staticmethod
+    def encrypt(message, session_key, file_out):
+        # Encrypt the data with the AES session key
+        cipher_aes = AES.new(session_key, AES.MODE_EAX)
+        ciphertext, tag = cipher_aes.encrypt_and_digest(message)
+        [file_out.write(x) for x in (cipher_aes.nonce, tag, ciphertext)]
+
+    @staticmethod
+    def decrypt(file_in, session_key):
+        nonce, tag, ciphertext =  [file_in.read(x)
+                 for x in (BLOCK_SIZE, 16, -1)]
+
+        cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
+        return cipher_aes.decrypt_and_verify(ciphertext, tag)
+    
+
+        
