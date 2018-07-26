@@ -7,7 +7,7 @@ MAX_BUFFER_SIZE = 4096
 
 def client_thread(conn, ip, port):
     finished=False
-    cryptomanager = CryptoManager()
+    cryptomanager = CryptoManager('client_cert.pem', 'server_key.pem')
     print("Start comunication with %s : %s" %( ip , port))
     while not finished:
         input_from_client_bytes = conn.recv(MAX_BUFFER_SIZE)

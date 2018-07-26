@@ -4,7 +4,7 @@ from cryptoManager import CryptoManager
 HOST="127.0.0.1"
 PORT=12345
 
-crypto = CryptoManager()
+crypto = CryptoManager('server_cert.pem', 'client_key.pem')
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as soc:
     soc.connect((HOST, PORT))
     finished=False
